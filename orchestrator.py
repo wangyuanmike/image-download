@@ -2,6 +2,8 @@
 Orchestrating all operations that are needed for batch image downloading,
 which is the entrypoint of the CLI.
 """
+from parser import Parser
+
 from url import Url
 
 
@@ -15,24 +17,9 @@ class Orchestrator:
         self.url_list = []
 
     def batch_download(self, url_txt_path):
-        self.url_list = Parser.parse(url_txt_path)
+        self.url_list, self.host_index = Parser.parse(url_txt_path)
 
     def monitor(self):
-        pass
-
-
-
-class Scheduler:
-    """
-    An iterator which decide the sequence of url download
-    """
-    def __init__(self, url_list):
-        pass
-
-    def next(self):
-        pass
-
-    def has_next(self):
         pass
 
 

@@ -2,6 +2,7 @@
 Orchestrating all operations that are needed for batch image downloading,
 which is the entrypoint of the CLI.
 """
+from url import Url
 
 
 class Orchestrator:
@@ -11,41 +12,14 @@ class Orchestrator:
         - Progress check: persist progress, show progress
     """
     def __init__(self):
-        pass
+        self.url_list = []
 
-    def batch_download(self):
-        pass
+    def batch_download(self, url_txt_path):
+        self.url_list = Parser.parse(url_txt_path)
 
     def monitor(self):
         pass
 
-
-class Url:
-    """
-    Url eniity
-    """
-    def __init__(self, url_str):
-        pass
-
-
-class Parser:
-    """
-    Parse a url string list into a list of Url entities
-    """
-    def __init__(self):
-        pass
-
-
-    def validate(self, url_str):
-        pass
-
-
-    def parse(self, url_str):
-        pass
-
-
-    def append(self):
-        pass
 
 
 class Scheduler:

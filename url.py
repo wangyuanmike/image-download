@@ -10,16 +10,19 @@ class UrlStatus(Enum):
     """
     TODO = auto()
     INVALID = auto()
-    DOWNLOADING = auto()
-    FAILED = auto()   # download failed -> can be retried later
-    ABORTED = auto()  # exceed max_retries -> abort download
+    DOWNLOADED = auto()
+    FAILED = auto()
 
 
 class Url:
     """
     The initialization of Url object is done through the Parser
     """
-    def __init__(self, url_str, status=UrlStatus.TODO, retries=0):
+    def __init__(self, url_str, status=UrlStatus.TODO, retries=0, file_name=""):
         self.url_str = url_str
         self.status = status
         self.retries = retries
+        self.file_name = file_name
+
+    def __str__(self):
+        return f"{self.url_str}, {self.file_name}, {self.status.name}"

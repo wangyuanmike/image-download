@@ -2,65 +2,38 @@
 Orchestrating all operations that are needed for batch image downloading,
 which is the entrypoint of the CLI.
 """
+from concurrent.futures import ALL_COMPLETED, ThreadPoolExecutor, wait
 from parser import Parser
 
+from config import app_config
+from downloader import Downloader
 from url import Url
 
 
 class Orchestrator:
     """
-    Operations that need to be orchestrated:
-        - Batch download: parse -> schedule(iterator) -> download -> extract -> save
-        - Progress check: persist progress, show progress
+    Orchestrate batch download: parse url list -> use thread pool to download
     """
     def __init__(self):
         self.url_list = []
 
-    def batch_download(self, url_txt_path):
-        self.url_list, self.host_index = Parser.parse(url_txt_path)
+    def batch_download(self, url_file_path):
+        self.url_list = Parser.parse(url_file_path)
 
-    def monitor(self):
-        pass
+        with ThreadPoolExecutor(max_workers=app_config.max_workers) as executor:
+            tasks = [executor.submit(Downloader(url).download) for url in self.url_list]
 
+        wait(tasks, return_when=ALL_COMPLETED)
 
-class Downloader:
-    """
-    Download image from url
-    """
-    def __init__(self, url):
-        pass
+        save_path = "./download_summary.txt"
+        with open(save_path, "w") as file:
+            for url in self.url_list:
+                file.write(str(url) + "\n")
 
-    def extract(self):
-        """
-        Extract (guess) image file name and type through url or response
-        """
-        pass
-
-    def download(self, url):
-        pass
-
-    def save(self):
-        pass
+        print("==================================")
+        print("Download is finished.")
 
 
-class PostProcessor:
-    """
-    Post-processing operations (e.g. compression, corruption check) after image download
-    """
-    def __init__(self):
-        pass
-
-
-class Monitor:
-    """
-    Monitor and persist the download progress
-    """
-    def __init__(self):
-        pass
-
-    def persist_progress(self):
-        pass
-
-    def show_progress(self):
-        pass
-
+if __name__ == "__main__":
+    orchestrator = Orchestrator()
+    orchestrator.batch_download("url_list.txt")

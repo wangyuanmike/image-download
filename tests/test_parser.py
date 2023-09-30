@@ -1,4 +1,5 @@
 from parser import Parser
+from urllib.parse import urlparse
 
 import pyfakefs
 import pytest
@@ -9,13 +10,11 @@ def test_is_invalid_url():
     url1 = "http://mars.jpl.nasa.gov/msl-raw-images/000I1_DXXX.jpg"
     url2 = "invalid-url"
 
-    valid, host = Parser.is_valid_url(url1)
+    valid = Parser.is_valid_url(urlparse(url1))
     assert valid
-    assert host == "mars.jpl.nasa.gov"
 
-    valid, host = Parser.is_valid_url(url2)
+    valid = Parser.is_valid_url(urlparse(url2))
     assert not valid
-    assert host == ''
 
 def test_parse_url_list_file(fs):
     file_path = '/tmp/file_path'
